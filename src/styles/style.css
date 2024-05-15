@@ -1,0 +1,78 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  overflow: hidden;
+}
+
+.container {
+    /*  center items on the page */
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .green-scanner {
+    width: 90vw;
+    height: calc(90vw/2);
+    border-top-left-radius: 45vw;
+    border-top-right-radius: 45vw;
+    transform-origin: bottom center;
+    background: radial-gradient(circle at 50% 100%, #00ff0055, #00ff00);
+    animation: scan 4s infinite linear;
+    position: absolute;
+    bottom: 0;
+  }
+
+  .canvas-radar {
+    width: 90vw;
+    height: calc(90vw/2);
+    position: absolute;
+    height: calc(90vw/2);
+    pointer-events: none;
+    bottom: 0;
+    border-top-left-radius: 45vw;
+    border-top-right-radius: 45vw;
+  }
+
+  .line {
+    position: absolute;
+    bottom: 0;
+    transform-origin: bottom center;
+    width: 3px;
+    height: calc(90vw/2);
+    background-color: red;
+    transition: transform 0.5s ease;
+  }
+
+  .connect {
+    position: absolute;
+    outline: none;
+    top:10px;
+    right:10px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+    font-weight: bold;
+    color: white;
+    font-size: medium;
+    border-width: 5px;
+    border-color: black;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .connect:hover {
+    font-size: large;
+  }
+  
+  .connect:active {
+    transform: scale(1.1);
+  }
+  
+  
+  
