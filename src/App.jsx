@@ -17,12 +17,12 @@ function App() {
     setYOrigin(canvas.height - 5);
   }, []);
 
-  useEffect(() => {
-    let distance = 50;
-    let angle = 90;
-    getCoords(distance, angle);
-    setAngle(angle);
-  }, [XOrigin, YOrigin]);
+  // useEffect(() => {
+  //   let distance = 50;
+  //   let angle = 90;
+  //   getCoords(distance, angle);
+  //   setAngle(angle);
+  // }, [XOrigin, YOrigin]);
 
   const getCoords = (dist, angle) => {
     let sdist = dist;
