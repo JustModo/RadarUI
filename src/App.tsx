@@ -139,7 +139,6 @@ function App() {
           className="line"
           style={{ transform: `rotate(${Angle - 90}deg)` }}
         />
-        {/* <canvas className="canvas-radar" ref={canvasRef} /> */}
         <div className="canvas-radar">
           <CanvasRadar X={sendX} Y={sendY} I={sendI} />
         </div>
