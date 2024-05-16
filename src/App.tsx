@@ -29,7 +29,9 @@ function App() {
       const port = await navigator.serial.requestPort();
       await port.open({ baudRate: 9600 });
       console.log(`Serial port opened at 9600 baud`);
-      startReading(port);
+      setIsLoading(false);
+      setIsConnected(true);
+      await startReading(port);
     } catch (error) {
       setIsLoading(false);
       setIsConnected(false);
@@ -54,8 +56,6 @@ function App() {
 
         const lines = chunks.split("\n");
         for (let i = 0; i < lines.length - 1; i++) {
-          setIsLoading(false);
-          setIsConnected(true);
           console.log("Received:", lines[i]);
           extractData(lines[i]);
         }
@@ -65,6 +65,7 @@ function App() {
       console.error("Read error:", error);
     } finally {
       reader.releaseLock();
+      await port.close();
       await readableStreamClosed.catch(() => {});
     }
   }

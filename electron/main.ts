@@ -1,7 +1,9 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow,dialog } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
+
+app.commandLine.appendSwitch('enable-features', 'ElectronSerialChooser')
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -31,6 +33,7 @@ function createWindow() {
     icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
+      enableBlinkFeatures: 'Serial',
     },
   })
 
@@ -38,6 +41,30 @@ function createWindow() {
   win.webContents.on('did-finish-load', () => {
     win?.webContents.send('main-process-message', (new Date).toLocaleString())
   })
+  win.webContents.session.on('select-serial-port', (event, portList, webContents, callback) => {
+    console.log('SELECT-SERIAL-PORT FIRED WITH', portList);
+  
+    // Display some type of dialog so that the user can pick a port
+    const portName = dialog.showMessageBoxSync({
+      type: 'question',
+      title: 'Select a serial port',
+      message: 'Please select a serial port:',
+      buttons: portList.map((port) => `${port.displayName} ${port.portName}`),
+    });
+  
+    if (portName === -1) {
+      callback('');
+    } else {
+      const selectedPort = portList[portName]
+      callback(selectedPort.portId);
+    }
+  
+    event.preventDefault();
+  });
+
+
+  win.webContents.openDevTools()
+
 
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL)
