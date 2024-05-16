@@ -1,28 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import "./styles/style.css";
+import CanvasRadar from "./CanvasRadar";
 
 function App() {
-  const [XOrigin, setXOrigin] = useState(0);
-  const [YOrigin, setYOrigin] = useState(0);
   const [Angle, setAngle] = useState(0);
   const [IsConnected, setIsConnected] = useState(false);
   const [IsLoading, setIsLoading] = useState(false);
-
-  const canvasRef = useRef(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    canvas.getContext("2d");
-    setXOrigin(canvas.width / 2);
-    setYOrigin(canvas.height - 5);
-  }, []);
-
-  // useEffect(() => {
-  //   let distance = 50;
-  //   let angle = 90;
-  //   getCoords(distance, angle);
-  //   setAngle(angle);
-  // }, [XOrigin, YOrigin]);
 
   const getCoords = (dist, angle) => {
     let sdist = dist;
@@ -31,15 +14,6 @@ function App() {
     const y = Math.sin(radians) * sdist;
     console.log("Calculated:", x, y);
     return { x, y };
-  };
-
-  const updateCanvas = (xval, yval) => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    ctx.fillStyle = "white";
-    ctx.beginPath();
-    ctx.arc(XOrigin - xval, YOrigin - yval, 2, 0, Math.PI * 2);
-    ctx.fill();
   };
 
   //----------------------- Serial Port -----------------------
@@ -54,8 +28,6 @@ function App() {
       setIsLoading(true);
       const port = await navigator.serial.requestPort();
       await port.open({ baudRate: 9600 });
-      setIsLoading(false);
-      setIsConnected(true);
       console.log(`Serial port opened at 9600 baud`);
       startReading(port);
     } catch (error) {
@@ -82,6 +54,8 @@ function App() {
 
         const lines = chunks.split("\n");
         for (let i = 0; i < lines.length - 1; i++) {
+          setIsLoading(false);
+          setIsConnected(true);
           console.log("Received:", lines[i]);
           extractData(lines[i]);
         }
@@ -97,19 +71,52 @@ function App() {
 
   function extractData(data) {
     try {
-      // const objdata = JSON.parse(data);
-      // const { angle, distance } = objdata;
-      // const { x, y } = getCoords(angle, distance);
       const fdata = data.split(" ");
       const distance = parseInt(fdata[0]);
       const angle = parseInt(fdata[1]);
       const { x, y } = getCoords(distance, angle);
-      updateCanvas(x, y);
+      setSendX(x);
+      setSendY(y);
+      setSendI(angle);
       setAngle(angle);
     } catch (err) {
       console.log(err);
     }
   }
+
+  // useEffect(() => {
+  //   let i = 0;
+  //   let direction = 1;
+  //   const interval = setInterval(() => {
+  //     const { x, y } = getCoords(100, i);
+  //     setSendX(x);
+  //     setSendY(y);
+  //     setSendI(i);
+  //     setAngle(i);
+  //     console.log("Angle", i);
+
+  //     i += direction;
+  //     if (i === 0 || i === 180) {
+  //       direction *= -1;
+  //     }
+  //   }, 20);
+
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, []);
+
+  // useEffect(() => {
+  //   const { x, y } = getCoords(200, 90);
+  //   setSendX(x);
+  //   setSendY(y);
+  //   setSendI(90);
+  //   setAngle(90);
+  // }, []);
+
+  const [sendX, setSendX] = useState(null);
+  const [sendY, setSendY] = useState(null);
+  const [sendI, setSendI] = useState(null);
 
   return (
     <>
@@ -121,13 +128,20 @@ function App() {
         >
           {IsConnected ? ":D" : IsLoading ? "..." : "Connect"}
         </button>
-        <div className={`outer-circle ${IsConnected ? "ripple" : ""}`} />
-        <div className="green-scanner" />
+        <div
+          className={`outer-circle ${IsLoading ? "flash" : ""} ${
+            IsConnected ? "ripple" : ""
+          }`}
+        />
+        <div className={`green-scanner `} />
         <div
           className="line"
           style={{ transform: `rotate(${Angle - 90}deg)` }}
-        ></div>
-        <canvas className="canvas-radar" ref={canvasRef} />
+        />
+        {/* <canvas className="canvas-radar" ref={canvasRef} /> */}
+        <div className="canvas-radar">
+          <CanvasRadar X={sendX} Y={sendY} I={sendI} />
+        </div>
       </div>
     </>
   );

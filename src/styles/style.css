@@ -81,6 +81,8 @@ body {
     bottom: 0;
     border-top-left-radius: 40vw;
     border-top-right-radius: 40vw;
+    overflow: hidden;
+    /* background-color: white; */
   }
 
 
@@ -91,7 +93,7 @@ body {
     width: 3px;
     height: calc(80vw/2);
     background: linear-gradient(to bottom, rgba(196, 254, 196), rgba(0, 100, 0, 0));
-    transition: transform 0.5s ease;
+    transition: transform 0.01s ease;
   }
 
   .connect {
@@ -121,5 +123,29 @@ body {
     transform: scale(1.1);
   }
   
+  .flash {
+    animation: flash 2s infinite linear;
+  }
+
+  .flash:before {
+    animation: miniripple 1s infinite linear;
+  }
   
-  
+  @keyframes miniripple {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1.1);
+      opacity: 0;
+    }
+  }
+
+  @keyframes flash {
+    0%,100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
