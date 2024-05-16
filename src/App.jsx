@@ -29,9 +29,8 @@ function App() {
     const radians = angle * (Math.PI / 180);
     const x = Math.cos(radians) * sdist;
     const y = Math.sin(radians) * sdist;
-    console.log(x, y);
-    updateCanvas(x, y);
-    setAngle(angle);
+    console.log("Calculated:", x, y);
+    return { x, y };
   };
 
   const updateCanvas = (xval, yval) => {
@@ -42,6 +41,12 @@ function App() {
     ctx.arc(XOrigin - xval, YOrigin - yval, 2, 0, Math.PI * 2);
     ctx.fill();
   };
+
+  //----------------------- Serial Port -----------------------
+
+  function handleClick() {
+    connectToSerialPort();
+  }
 
   async function connectToSerialPort() {
     try {
@@ -58,10 +63,6 @@ function App() {
       setIsConnected(false);
       console.error("Error:", error.message);
     }
-  }
-
-  function handleClick() {
-    connectToSerialPort();
   }
 
   async function startReading(port) {
@@ -96,9 +97,15 @@ function App() {
 
   function extractData(data) {
     try {
-      const objdata = JSON.parse(data);
-      const { angle, distance } = objdata;
-      getCoords(angle, distance);
+      // const objdata = JSON.parse(data);
+      // const { angle, distance } = objdata;
+      // const { x, y } = getCoords(angle, distance);
+      const fdata = data.split(" ");
+      const distance = parseInt(fdata[0]);
+      const angle = parseInt(fdata[1]);
+      const { x, y } = getCoords(distance, angle);
+      updateCanvas(x, y);
+      setAngle(angle);
     } catch (err) {
       console.log(err);
     }
