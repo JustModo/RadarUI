@@ -82,7 +82,7 @@ function App() {
         const lines = chunks.split("\n");
         for (let i = 0; i < lines.length - 1; i++) {
           console.log("Received:", lines[i]);
-          extractData();
+          extractData(lines[i]);
         }
         chunks = lines[lines.length - 1];
       }
