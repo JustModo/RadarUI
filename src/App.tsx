@@ -73,8 +73,8 @@ function App() {
   function extractData(data) {
     try {
       const fdata = data.split(" ");
-      const distance = parseInt(fdata[0]);
-      const angle = parseInt(fdata[1]);
+      const distance = parseInt(fdata[1]);
+      const angle = parseInt(fdata[0]);
       const { x, y } = getCoords(distance, angle);
       setSendX(x);
       setSendY(y);
