@@ -21,7 +21,7 @@ export default function CanvasRadar({ X, Y, I }) {
 
   const [Radius, setRadius] = useState(3 * ((window.innerWidth * 0.8) / 580));
 
-  const [Scale, setScale] = useState((window.innerWidth * 0.8) / 440);
+  const [Scale, setScale] = useState((window.innerWidth * 0.8) / 220);
 
   const initialArray = new Array(180).fill(null);
   const [circles, setCircles] = useState(initialArray);
@@ -37,7 +37,7 @@ export default function CanvasRadar({ X, Y, I }) {
         Y: (window.innerWidth * 0.8) / 2,
       });
       setRadius(3 * ((window.innerWidth * 0.8) / 580));
-      setScale((window.innerWidth * 0.8) / 440);
+      setScale((window.innerWidth * 0.8) / 220);
     };
 
     window.addEventListener("resize", handleResize);
@@ -49,7 +49,15 @@ export default function CanvasRadar({ X, Y, I }) {
 
   const addPoint = (x, y, index) => {
     if (index > 180 || index < 0) return;
-    if (x === 0 && y === 0) return;
+    if (x === 0 && y === 0) {
+      const newCircles = [...circles];
+      newCircles[index] = {
+        x: null,
+        y: null,
+      };
+      setCircles(newCircles);
+      return;
+    }
     const newCircles = [...circles];
     newCircles[index] = {
       x,
